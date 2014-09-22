@@ -4,27 +4,16 @@ use strict;
 # Compute the codon occurrences of ribosome footprints overall, dependent both on
 # position in the footprint and categorized by the length of the footprint
 # Use as input a "simplified" version of a SAM file
-# Output a heatmap for each codon. Need to normalize the counts
+# Output a heatmap for each codon. Normalize the counts
 # as percentages of total, and not absolute numbers
 # 
-# This version prints the heatmaps with the whitespace on the left-hand side
-# (diff lengths aligned to 3' end)
-# 
-# UPDATE: This version can take a SAM file with reads mapped to multiple chromosomes
-# Thus will need to only keep footprints which lie within coding regions
-# but ony any of the chromosomes.
-# Ignore multiple translation start site issues or splicing issues for the moment.
-# Also, I don't think I need to store genomic sequence, just the lengths... save memory
-
 # Store length of the whole genome file which is assumed to be fna format
 # each genome is a member of a hash of genomes, given by the NC identifier
 # Must get the identifier from the first line.
 # Input a directory of genome files. Cannot contain anything else.
 # 
-# Drop anything < 11 codons (33 nt)
 # fill in seqs on 5' end, align to 3' end
 # 
-# UPDATE: make major changes to frame detection
 
 my $genomeDirectory = $ARGV[0];
 my $pttDirectory = $ARGV[1];
@@ -184,12 +173,12 @@ LINE: while (<IN>) {
     
     my $length = int($l / 3);
     
-    # Tally the lenCat ~ total number of FPs of each length (in codons)
+    # Tally the length categories ~ total number of FPs of each length (in codons)
     $lenCat{$length} += $num;
     
     # Check to see if we have a hash representing this length yet
     # If it doesn't, create it
-    # This hash will contain n=15 sub-hashes (45 nt -> 15 codons)
+    # This hash will contain n=15 sub-hashes (45 nt --> 15 codons)
     unless (exists($counts{$length})) {
         my @newlist;
         for my $pos (0 .. ($maxLength / 3) - 1 ) {
@@ -230,6 +219,7 @@ foreach my $l (keys %counts) {
 
 # Print a file containing the number in each length category
 # and ditch anything less than some minimum number
+# because of low sample size noise
 open (OUT, ">$lengthTalliesFile") or die $!;
 foreach my $i (sort {$a <=> $b} keys %lenCat) {
     print OUT "$i\t$lenCat{$i}\n";
