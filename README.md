@@ -29,9 +29,13 @@ bowtie-1.0.0/bowtie -S -p 8 -l 23 -m 1 --sam-nohead e_coli_MG1655 -q norrna.fq >
 Result:
 
 reads processed: 158173518
+
 reads with at least one reported alignment: 95854989 (60.60%)
+
 reads that failed to align: 54522442 (34.47%)
+
 reads with alignments suppressed due to -m: 7796087 (4.93%)
+
 Reported 95854989 alignments to 1 output stream(s)
 
 4. Only keep the parts that matched the genome. (0 for unmapped, 1 for multi mapped)
