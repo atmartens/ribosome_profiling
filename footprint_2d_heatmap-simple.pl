@@ -8,12 +8,9 @@ use strict;
 # for each gene.
 
 # NOTE: This ignores which strand a gene is on, and only tallies
-# the absolute chromosome positions
-# all in the same direction from the zero point
-# 
-# issues with overlapping ORFs?
-# with genes on minus strand? (are they displayed backwards?)
-# TODO: make updated version for multi chromosomes
+# the absolute chromosome positions all in the same direction from the zero point
+# for now, just handle a single pair of FNA/PTT files
+# NOTE: issues with overlapping ORFs?
 
 my $inGenome = $ARGV[0];
 my $inPTT = $ARGV[1];
