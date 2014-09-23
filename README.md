@@ -118,5 +118,5 @@ It helps to put the perl programs, genomes files, and so on in their own directo
   
   c. Compute the average density for each gene, the codon composition of each gene, and combine them for the transcriptome codon composition.
   
-  ./Perl_Programs/mRNAseq_averages.pl Genomes/ecoli_ptt_nostops/NC000913.ptt Genomes/NC000913.ffn Plots/1d_density/mrna/ Plots/1d_density/mrna_rowstack Plots/1d_density/mrna_codon_totals.tsv Plots/1d_density/mrna_gene_avg_density.tsv
+  ./Perl_Programs/mRNAseq_averages.pl Genomes/ecoli_ptt_nostops/NC_000913.ptt Genomes/NC_000913.ffn Plots/1d_density/mrna/ Plots/1d_density/mrna_rowstack Plots/1d_density/mrna_codon_totals.tsv Plots/1d_density/mrna_gene_avg_density.tsv
 
