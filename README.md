@@ -106,3 +106,17 @@ It helps to put the perl programs, genomes files, and so on in their own directo
   set key off
   plot "rpsA-b0911.heat.txt" matrix with image
 
+17. Compute the mRNA transcriptome codon counts:
+
+  a. Use the same program as before to tally the ends of the sequencing reads. These are not footprints, but that's OK, for this application it doesn't matter. Must also simplify the SAM file, as before, with the fix_SAM perl program.
+  
+  ./Perl_Programs/footprint_2d_heatmap-simple.pl Genomes/ecoli_chromosome/NC_000913.fna Genomes/ecoli_ptt_nostops/NC_000913.ptt Sequencing_Reads/rnaseq.simple Plots/2d_heatmaps/mrna_endpoints/
+  
+  b. Take the endpoints and collapse them to 1-dimensional density over position information
+  
+  ./Perl_Programs/footprint_1d_density_codon_gnuplot.pl Plots/2d_heatmaps/mrna_endpoints/ Plots/1d_density/mrna/
+  
+  c. Compute the average density for each gene, the codon composition of each gene, and combine them for the transcriptome codon composition.
+  
+  ./Perl_Programs/mRNAseq_averages.pl Genomes/ecoli_ptt_nostops/NC000913.ptt Genomes/NC000913.ffn Plots/1d_density/mrna/ Plots/1d_density/mrna_rowstack Plots/1d_density/mrna_codon_totals.tsv Plots/1d_density/mrna_gene_avg_density.tsv
+
