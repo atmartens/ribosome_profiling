@@ -202,7 +202,7 @@ foreach my $gene (keys %IDtoAvg) {
 # Next columns are counts for synonyms of that a.a.; - for missing data
 
 my $outFile = $ARGV[3];
-open (OUT, ">$outFile") or die $!;
+open (OUT, ">$outFile.tsv") or die $!;
 
 foreach my $aa (sort keys %all_synonyms) {
     print OUT "$aa\t";
