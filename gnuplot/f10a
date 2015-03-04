@@ -1,0 +1,82 @@
+#!/usr/bin/gnuplot
+
+set term pngcairo font "Arial, 18" size 992, 645
+set output "img/f10a.png"
+
+set multiplot layout 1,2 rowsfirst
+
+set origin 0.0,-0.0125
+
+set xrange [1:0]
+set yrange [416.5:496.5]
+set key off
+set xlabel "GC Content"
+
+set xtic offset 0,-1.5
+set xlabel offset 0,-0.4
+set xlabel rotate by 270
+set xtic rotate by 90
+set xtic 0.5
+set mxtics
+set xtic format "%.1f"
+
+set xtics out
+set ytics out nomirror
+
+set size 0.25,1.01
+
+set rmargin 0
+set bmargin 4
+
+set ylabel "5' end of footprint (nucleotides)"
+
+
+plot "data/rpsA/rpsA-gc.csv" using 2:1 w li lw 3
+
+###
+###
+
+set rmargin 25
+set lmargin 0
+set bmargin 3.45
+
+set origin 0.26,0.0
+
+set size 1,1
+
+unset xrange
+unset yrange
+
+set xtic autofreq
+
+set yrange [416.5:496.5]
+set xrange [460.5:517.5]
+set datafile missing "-"
+set cblabel "Number of footprints"
+set cblabel offset character 1,0
+set cbtics offset -0.75,0
+set cbrange [10<*:*]
+
+unset xlabel
+unset xtic
+unset mxtics
+set xtic format "% g"
+
+set xtics out
+
+set mxtics 4
+set mytics 4
+
+set xlabel "3' end of footprint (nucleotides)"
+unset ylabel
+unset ytic
+set key off
+
+plot "data/rpsA/rpsA-b0911.heat-offset.csv" matrix with image
+unset multiplot
+
+###
+###
+
+unset output
+
