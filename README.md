@@ -28,7 +28,7 @@ It helps to put the perl programs, genomes files, and so on in their own directo
 
   bowtie --quiet -p 8 -l 23 --un=Sequencing_Reads/norrna.fq rrna_seqs -q Sequencing_Reads/trimmed-data.fq > /dev/null
 
-7. Align to genome. This means allow up to 2 mismatches in the first 23 nucleotides, no multi-mappers.
+7. Align to genome. This means allow up to 2 mismatches in the first 23 nucleotides, no multi-mappers. Whether or not to allow multi mappers depends on the tradeoff: which is worse - to assign read density where it doesn't belong, or to remove read density from where it does? When performing global analyses of the data, perhaps disallowing multi-mappers is best, but when doing gene-specific analyses, perhaps it's best to leave them. There is no correct answer.
 
   bowtie -S -p 8 -l 23 -m 1 --sam-nohead e_coli_MG1655 -q norrna.fq > aligned.SAM
 
@@ -52,7 +52,7 @@ It helps to put the perl programs, genomes files, and so on in their own directo
 
 9. Make a "simplified" SAM file.
 
-  Note: does not properly account for reads which are the "wrong" direction (these events are rare).
+  Note: does not properly account for reads which are the "wrong" direction (these events are rare, probably due to trace DNA contaminants).
 
   ./Perl_Programs/fix_SAM_multi_chromosome.pl Genomes/ecoli_chromosome/ Sequencing_Reads/matched.SAM Sequencing_Reads/fps.simple
 
@@ -70,35 +70,27 @@ It helps to put the perl programs, genomes files, and so on in their own directo
 
   ./Perl_Programs/filter_only_elong_footprints_multi_chromosome.pl Genomes/ecoli_ptt_nostops Sequencing_Reads/fps.simple Sequencing_Reads/elong.simple
 
-12. Make heatmaps of extended footprint codon composition by length class. Frame matters.
+12. Make heatmaps of extended footprint codon composition by length class. Frame matters. Can either be aligned to the 5' end (LtoR) or the 3' end (RtoL), and may or may not be normalized to mRNAseq data. Can choose to fill in sequence from the genome, as well. Example (forgive the terrible file naming scheme):
 
-  ./Perl_Programs/footprint_codon_composition_elongation_multi_chromosome.pl Genomes/ecoli_chromosome/ Genomes/ecoli_ptt_nostops/ Sequencing_Reads/elong.simple Plots/codon_heatmaps/ Plots/codon_heatmaps/len_tally.tsv
+  ./Perl_Programs/footprint_codon_composition_lengths_position_simple_heatmaps_RtoL_multi_chromosome.pl Genomes/ecoli_chromosome/ Genomes/ecoli_ptt_nostops/ Sequencing_Reads/elong.simple Plots/codon_heatmaps/ Plots/codon_heatmaps/len_tally.tsv
 
 13. Extend the 5' ends to 45 nt, discard anything > 45 nt. Frame does not matter.
 
   ./Perl_Programs/footprint_extend_5prime_track_length_multi_chromosome.pl Genomes/ecoli_chromosome/ Genomes/ecoli_ptt_nostops/ Sequencing_Reads/elong.simple Sequencing_Reads/extended.simple
 
-14. Make plots of AUGC content by position and length.
-
-  ./Perl_Programs/extended_fps_augc_v2.pl Sequencing_Reads/extended.simple Plots/extended_augc/
-
-15. Make GC heatmap plot.
+14. Make GC heatmap plot.
 
   ./Perl_Programs/extended_fps_gc_content_v2.pl Sequencing_Reads/extended.simple Plots/gc_heatmap
 
-16. Make 2d-heatmaps of footprint ends
+15. Make 2d-heatmaps of footprint ends
 
   a. Find the endpoints and append to files (this means must manually delete output from a previous run)
 
   ./Perl_Programs/footprint_2d_heatmap-simple.pl Genomes/ecoli_chromosome/NC_000913.fna Genomes/ecoli_ptt_nostops/NC_000913.ptt Sequencing_Reads/elong.simple Plots/2d_heatmaps/endpoints/
 
-  b. Tally the endpoints
+  b. Tally the endpoints and arrange into 2d matrix
   
-  ./Perl_Programs/fp_coord_combine.pl Plots/2d_heatmaps/endpoints/ Plots/2d_heatmaps/endpoints_combined/
-
-  c. Arrange them in a 2d matrix
-  
-  ./Perl_Programs/footprint_2d_heatmap_part2_nucleotide.pl Genomes/ecoli_ptt_nostops/NC_000913.ptt Plots/2d_heatmaps/endpoints_combined/ Plots/2d_heatmaps/output/
+  ./Perl_Programs/footprint_2d_heatmap_part2_nucleotide_multi_chromosome.pl Genomes/ecoli_ptt_nostops/NC_000913.ptt Plots/2d_heatmaps/endpoints/ Plots/2d_heatmaps/out/
 
   Then, need to go manually in Gnuplot and make the plot with the appropriate x,y range etc.
   example:
@@ -106,17 +98,4 @@ It helps to put the perl programs, genomes files, and so on in their own directo
   set key off
   plot "rpsA-b0911.heat.txt" matrix with image
 
-17. Compute the mRNA transcriptome codon counts:
-
-  a. Use the same program as before to tally the ends of the sequencing reads. These are not footprints, but that's OK, for this application it doesn't matter. Must also simplify the SAM file, as before, with the fix_SAM perl program.
-  
-  ./Perl_Programs/footprint_2d_heatmap-simple.pl Genomes/ecoli_chromosome/NC_000913.fna Genomes/ecoli_ptt_nostops/NC_000913.ptt Sequencing_Reads/rnaseq.simple Plots/2d_heatmaps/mrna_endpoints/
-  
-  b. Take the endpoints and collapse them to 1-dimensional density over position information
-  
-  ./Perl_Programs/footprint_1d_density_codon_gnuplot.pl Plots/2d_heatmaps/mrna_endpoints/ Plots/1d_density/mrna/
-  
-  c. Compute the average density for each gene, the codon composition of each gene, and combine them for the transcriptome codon composition.
-  
-  ./Perl_Programs/mRNAseq_averages.pl Genomes/ecoli_ptt_nostops/NC_000913.ptt Genomes/NC_000913.ffn Plots/1d_density/mrna/ Plots/1d_density/mrna_rowstack Plots/1d_density/mrna_codon_totals.tsv Plots/1d_density/mrna_gene_avg_density.tsv
 
