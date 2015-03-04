@@ -4,7 +4,6 @@ use strict;
 # Take tabulations of left to right footprints for a single gene
 # Compute total occupancies of the codons, aka nucleotides divided by 3
 # This is the smooshing of the 3' and 5' ends heatmaps plot to a 1D plot
-# Make plots.
 
 # the initial input files are series of start and endpoints of footprints
 my @inputs = `ls -1 $ARGV[0]`;
@@ -20,10 +19,10 @@ foreach my $file (@inputs) {
     
     # tabulate
     foreach (@fps) {
-	my ($lhs,$rhs) = split;
+	my ($lhs,$rhs,$num) = split;
 	for my $pos ($lhs .. $rhs) {
 	    my $codon = int($pos / 3);
-	    $density{$codon}++;
+	    $density{$codon} += $num;
 	}
     }
     
@@ -52,8 +51,8 @@ foreach my $file (@inputs) {
     set terminal png
     set output "$file_out"
     set key off
-    set title "$name Footprint Density"
-    set ylabel "Number of Footprints"
+    set title "$name Sequencing Read Density"
+    set ylabel "Number of Reads"
     set xlabel "Codon Number"
     set autoscale
     set border 11
