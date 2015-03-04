@@ -3,7 +3,7 @@ Andrew T. Martens
 -----------------
 
 This is a summary of how to use the code to perform the data analysis on the Linux (BASH) command line.
-Original work was performed on a computer running Fedora 20 Linux in 2013-2014.
+Original work was performed on a computer running Fedora 20 Linux in 2013-2015.
 It helps to put the perl programs, genomes files, and so on in their own directories, but is not required.
 
 1. Get a Sequence Read Archive (SRA) file from the Gene Expression Omnibus. Example: SRR1067765.sra
